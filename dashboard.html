@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Segoe UI',sans-serif;background:#f4f2f8;color:#1a1a2e;min-height:100vh}
+
+/* HEADER */
+.header{background:#57068C;padding:20px 36px 24px}
+.header-top{font-size:11px;letter-spacing:3px;color:rgba(255,255,255,0.55);text-transform:uppercase;margin-bottom:16px;text-align:center}
+.header-mid{display:flex;align-items:center;justify-content:space-between}
+.header-left{display:flex;align-items:center;gap:14px}
+.caser-logo{width:52px;height:52px;flex-shrink:0}
+.header-name{color:#fff}
+.header-name h1{font-size:18px;font-weight:600;line-height:1.3}
+.header-link{margin-top:6px}
+.header-link a{font-size:12px;color:rgba(255,255,255,0.65);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:1px;transition:color 0.2s}
+.header-link a:hover{color:#fff}
+.header-date{font-size:12px;color:rgba(255,255,255,0.55);text-align:right;line-height:1.6}
+
+/* HERO STATS */
+.hero-stats{background:#57068C;padding:0 36px 0}
+.stat-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding-bottom:0;position:relative;top:28px}
+.stat-card{background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 4px 20px rgba(87,6,140,0.12);text-align:center}
+.stat-val{font-size:32px;font-weight:800;color:#57068C;line-height:1;letter-spacing:-1px}
+.stat-label{font-size:12px;color:#aaa;margin-top:6px;font-weight:500;letter-spacing:0.5px}
+
+/* LOADING */
+.loading{text-align:center;padding:60px 20px;color:#aaa;font-size:14px}
+.spinner{width:32px;height:32px;border:3px solid #e8e0f0;border-top-color:#57068C;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.error{background:#fdecea;color:#c62828;padding:16px 20px;border-radius:10px;font-size:13px;margin:20px 36px}
+
+/* MAIN */
+.main{padding:48px 36px 40px}
+.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.snum{width:28px;height:28px;border-radius:8px;background:#57068C;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.stitle{font-size:17px;font-weight:600;color:#1a1a2e}
+.ssub{font-size:12px;color:#aaa;margin-left:auto}
+.card{background:#fff;border-radius:14px;padding:22px;margin-bottom:22px}
+
+/* PUBLISH SECTION */
+.pub-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.pkpi{background:#faf8fd;border-radius:10px;padding:14px 16px;border:1px solid #ede7f6}
+.pkpi-val{font-size:24px;font-weight:700;color:#57068C}
+.pkpi-label{font-size:12px;color:#888;margin-top:4px}
+.pkpi-trend{font-size:11px;margin-top:4px;font-weight:500}
+.trend-up{color:#2e7d32}.trend-dn{color:#c62828}.trend-flat{color:#aaa}
+
+/* TOP 10 */
+.tab-row{display:flex;gap:8px;margin-bottom:18px}
+.tab-btn{font-size:13px;padding:7px 20px;border-radius:20px;border:1.5px solid #e2d8f0;background:#fff;color:#666;cursor:pointer;font-weight:500;transition:all 0.15s}
+.tab-btn:hover{border-color:#57068C;color:#57068C}
+.tab-btn.active{background:#57068C;color:#fff;border-color:#57068C}
+.ranked-by{font-size:12px;color:#aaa;margin-bottom:16px}
+.post-list{display:flex;flex-direction:column;gap:10px}
+.post-item{display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border-radius:12px;border:1px solid #f0eaf8;cursor:default;transition:all 0.18s}
+.post-item:hover{box-shadow:0 4px 16px rgba(87,6,140,0.1);transform:translateY(-2px);border-color:#d8c8f0}
+.post-rank{font-size:20px;font-weight:800;color:#57068C;min-width:32px;line-height:1.4}
+.post-rank.r1{font-size:24px}.post-rank.r2{font-size:22px}.post-rank.r3{font-size:21px}
+.post-body{flex:1;min-width:0}
+.post-row1{display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.post-metrics{display:flex;gap:16px;flex-wrap:wrap}
+.pm{font-size:12px;color:#888;display:flex;flex-direction:column;align-items:flex-start;gap:1px}
+.pm-val{font-size:15px;font-weight:700;color:#57068C;line-height:1}
+.pm-label{font-size:10px;color:#bbb}
+.post-title{font-size:13px;font-weight:500;color:#1a1a2e;line-height:1.5}
+.genre-tag{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500;white-space:nowrap}
+.g-img{background:#ede7f6;color:#57068C}.g-vid{background:#e3f2fd;color:#1565c0}
+
+/* CHART */
+.chart-wrap{position:relative;width:100%;height:200px}
+.chart-wrap-lg{position:relative;width:100%;height:240px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">Rednote Analytics Dashboard</div>
+  <div class="header-mid">
+    <div class="header-left">
+      <svg class="caser-logo" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="26" cy="26" r="26" fill="#57068C"/>
+        <ellipse cx="30" cy="22" rx="13" ry="8" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2" transform="rotate(-30 30 22)"/>
+        <ellipse cx="26" cy="26" rx="13" ry="8" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" transform="rotate(-30 26 26)"/>
+        <circle cx="13" cy="28" r="2.5" fill="rgba(255,255,255,0.9)"/>
+        <circle cx="11" cy="33" r="1.8" fill="rgba(255,255,255,0.65)"/>
+        <circle cx="10" cy="23" r="1.2" fill="rgba(255,255,255,0.5)"/>
+        <text x="26" y="46" text-anchor="middle" font-size="6" font-weight="700" fill="rgba(255,255,255,0.8)" font-family="Arial">CASER</text>
+      </svg>
+      <div class="header-name">
+        <h1>上纽大应用社会经济研究中心</h1>
+        <div class="header-link">
+          <a href="https://www.xiaohongshu.com/user/profile/61f67b19000000001000a0ff?xsec_token=AB5N3mIh-9vXfBc-KA6Di2OHvuo1q4cmRV4Kat4aq8YFI%3D&xsec_source=pc_search" target="_blank">小红书主页 →</a>
+        </div>
+      </div>
+    </div>
+    <div class="header-date" id="update-date">数据加载中...</div>
+  </div>
+</div>
+
+<div class="hero-stats">
+  <div class="stat-cards">
+    <div class="stat-card">
+      <div class="stat-val" id="s-followers">—</div>
+      <div class="stat-label">Followers</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="s-likessaves">—</div>
+      <div class="stat-label">Likes & Saves</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="s-posts">—</div>
+      <div class="stat-label">Total Posts</div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div id="loading-state" class="loading">
+    <div class="spinner"></div>
+    正在从 Google Drive 读取数据...
+  </div>
+  <div id="error-state" class="error" style="display:none"></div>
+  <div id="dashboard-content" style="display:none">
+
+    <!-- 01 发布数据 -->
+    <div class="card">
+      <div class="section-hd">
+        <div class="snum">01</div>
+        <div class="stitle">近30天发布数据</div>
+        <div class="ssub" id="pub-period"></div>
+      </div>
+      <div class="pub-kpis" id="pub-kpis"></div>
+      <div class="chart-wrap"><canvas id="chartPublish"></canvas></div>
+    </div>
+
+    <!-- 02 Top 10 -->
+    <div class="card">
+      <div class="section-hd">
+        <div class="snum">02</div>
+        <div class="stitle">Top 10 Posts</div>
+      </div>
+      <div class="ranked-by">Ranked by impressions (views)</div>
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="switchTab('all',this)">All</button>
+        <button class="tab-btn" onclick="switchTab('2025',this)">2025</button>
+        <button class="tab-btn" onclick="switchTab('2026',this)">2026</button>
+      </div>
+      <div class="post-list" id="post-list"></div>
+    </div>
+
+    <!-- 03 近30天趋势 -->
+    <div class="card">
+      <div class="section-hd">
+        <div class="snum">03</div>
+        <div class="stitle">近30天曝光 & 观看趋势</div>
+      </div>
+      <div class="chart-wrap-lg"><canvas id="chartViews"></canvas></div>
+    </div>
+
+    <!-- 04 互动 & 涨粉 -->
+    <div class="card">
+      <div class="section-hd">
+        <div class="snum">04</div>
+        <div class="stitle">近30天互动数据</div>
+      </div>
+      <div class="pub-kpis" id="engage-kpis"></div>
+      <div class="chart-wrap"><canvas id="chartEngage"></canvas></div>
+    </div>
+
+    <!-- 05 涨粉 -->
+    <div class="card">
+      <div class="section-hd">
+        <div class="snum">05</div>
+        <div class="stitle">近30天涨粉数据</div>
+      </div>
+      <div class="pub-kpis" id="fans-kpis"></div>
+      <div class="chart-wrap"><canvas id="chartFans"></canvas></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const FILE_ID = '17WXyB359e29Qa4CP7cuzC_za2YMKBhoN';
+const PROXY = `https://docs.google.com/spreadsheets/d/${FILE_ID}/export?format=xlsx&id=${FILE_ID}`;
+
+let allNotes = [];
+
+function fmt(n){
+  if(n===undefined||n===null||isNaN(n))return '—';
+  n=Number(n);
+  if(n>=1000000)return (n/1000000).toFixed(1)+'M';
+  if(n>=1000)return (n/1000).toFixed(1)+'K';
+  return n.toLocaleString();
+}
+function trendClass(v){return v>0?'trend-up':v<0?'trend-dn':'trend-flat'}
+function trendStr(v){return v>0?'↑ +'+v+'%':v<0?'↓ '+v+'%':'— 持平'}
+function parseDate(s){
+  if(!s)return null;
+  s=String(s).trim();
+  let m=s.match(/(\d{4})年(\d{2})月(\d{2})日/);
+  if(m)return new Date(m[1]+'-'+m[2]+'-'+m[3]);
+  m=s.match(/(\d{4})年(\d{1,2})月/);
+  if(m)return new Date(m[1]+'-'+m[2].padStart(2,'0')+'-01');
+  return new Date(s);
+}
+function sheetToKV(ws){
+  const d={};
+  const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+  rows.forEach(r=>{if(r[0]&&r[1]!=='')d[String(r[0]).trim()]=r[1];});
+  return d;
+}
+function sheetToDateSeries(ws){
+  const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+  const out=[];
+  for(let i=1;i<rows.length;i++){
+    const d=parseDate(rows[i][0]);
+    const v=parseFloat(String(rows[i][1]).replace('%',''));
+    if(d&&!isNaN(v))out.push({date:d,val:v,label:rows[i][0]});
+  }
+  return out.sort((a,b)=>a.date-b.date);
+}
+function makeTrendLabel(raw){
+  if(!raw)return '';
+  const s=String(raw).trim();
+  const m=s.match(/(\d{4})年(\d{2})月(\d{2})日/);
+  if(m)return m[2]+'/'+m[3];
+  return s.slice(0,10);
+}
+
+function renderPubKPIs(kv){
+  const items=[
+    {label:'总发布',key:'总发布',tkey:'总发布环比(%)'},
+    {label:'发布图文',key:'发布图文',tkey:'发布图文环比(%)'},
+    {label:'发布视频',key:'发布视频',tkey:'发布视频环比(%)'},
+  ];
+  document.getElementById('pub-kpis').innerHTML=items.map(it=>{
+    const v=kv[it.key];const t=kv[it.tkey];
+    return `<div class="pkpi"><div class="pkpi-val">${fmt(v)}</div><div class="pkpi-label">${it.label}</div><div class="pkpi-trend ${trendClass(t)}">${trendStr(t)}</div></div>`;
+  }).join('');
+}
+function renderEngageKPIs(kv){
+  const items=[
+    {label:'点赞',key:'点赞',tkey:'点赞环比(%)'},
+    {label:'收藏',key:'收藏',tkey:'收藏环比(%)'},
+    {label:'评论',key:'评论',tkey:'评论环比(%)'},
+    {label:'分享',key:'分享',tkey:'分享环比(%)'},
+  ];
+  document.getElementById('engage-kpis').innerHTML=items.map(it=>{
+    const v=kv[it.key];const t=kv[it.tkey];
+    return `<div class="pkpi"><div class="pkpi-val">${fmt(v)}</div><div class="pkpi-label">${it.label}</div><div class="pkpi-trend ${trendClass(t)}">${trendStr(t)}</div></div>`;
+  }).join('');
+}
+function renderFansKPIs(kv){
+  const items=[
+    {label:'净涨粉',key:'净涨粉',tkey:'净涨粉环比(%)'},
+    {label:'新增关注',key:'新增关注',tkey:'新增关注环比(%)'},
+    {label:'主页访客',key:'主页访客',tkey:'主页访客环比'},
+    {label:'主页转粉率',key:'主页转粉率(%)',tkey:'主页转粉率环比(%)'},
+  ];
+  document.getElementById('fans-kpis').innerHTML=items.map(it=>{
+    const v=kv[it.key];const t=kv[it.tkey];
+    const disp=it.key.includes('%')?v+'%':fmt(v);
+    return `<div class="pkpi"><div class="pkpi-val">${disp||'—'}</div><div class="pkpi-label">${it.label}</div><div class="pkpi-trend ${trendClass(t)}">${trendStr(t)}</div></div>`;
+  }).join('');
+}
+
+function makeTrendChart(id,series,label,color,pct){
+  const labels=series.map(d=>makeTrendLabel(d.label));
+  const vals=series.map(d=>d.val);
+  new Chart(document.getElementById(id),{
+    type:'line',
+    data:{labels,datasets:[{label,data:vals,borderColor:color,backgroundColor:color.replace(')',',0.07)').replace('rgb','rgba'),fill:true,tension:0.4,pointRadius:0,pointHoverRadius:5,pointHoverBackgroundColor:color}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{displayColors:false,callbacks:{label:ctx=>label+': '+(pct?ctx.parsed.y+'%':ctx.parsed.y.toLocaleString())}}},scales:{x:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#ccc',maxTicksLimit:10}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#bbb',callback:v=>pct?v+'%':fmt(v)}}}}
+  });
+}
+
+function makeViewsChart(exposure,views){
+  const labels=exposure.map(d=>makeTrendLabel(d.label));
+  new Chart(document.getElementById('chartViews'),{
+    type:'line',
+    data:{labels,datasets:[
+      {label:'曝光',data:exposure.map(d=>d.val),borderColor:'#57068C',backgroundColor:'rgba(87,6,140,0.06)',fill:true,tension:0.4,pointRadius:0,pointHoverRadius:5},
+      {label:'观看',data:views.map(d=>d.val),borderColor:'#9c4dcc',backgroundColor:'rgba(156,77,204,0.04)',fill:true,tension:0.4,pointRadius:0,pointHoverRadius:5}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{displayColors:true}},scales:{x:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#ccc',maxTicksLimit:10}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#bbb',callback:v=>fmt(v)}}}}
+  });
+}
+
+function switchTab(yr,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTop10(yr);
+}
+
+function renderTop10(yr){
+  let posts=[...allNotes];
+  if(yr!=='all'){
+    posts=posts.filter(p=>{
+      const d=parseDate(p['首次发布时间']);
+      return d&&String(d.getFullYear())===yr;
+    });
+  }
+  posts.sort((a,b)=>Number(b['观看量']||0)-Number(a['观看量']||0));
+  posts=posts.slice(0,10);
+  document.getElementById('post-list').innerHTML=posts.map((p,i)=>`
+    <div class="post-item">
+      <div class="post-rank ${i===0?'r1':i===1?'r2':i===2?'r3':''}">#${i+1}</div>
+      <div class="post-body">
+        <div class="post-row1">
+          <span class="genre-tag ${p['体裁']==='图文'?'g-img':'g-vid'}">${p['体裁']||'图文'}</span>
+          <div class="post-metrics">
+            <div class="pm"><span class="pm-val">${fmt(p['观看量'])}</span><span class="pm-label">观看</span></div>
+            <div class="pm"><span class="pm-val">${fmt(Number(p['点赞']||0)+Number(p['收藏']||0))}</span><span class="pm-label">点赞+收藏</span></div>
+            <div class="pm"><span class="pm-val">${fmt(p['涨粉'])}</span><span class="pm-label">涨粉</span></div>
+          </div>
+        </div>
+        <div class="post-title">${p['笔记标题']||'(无标题)'}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function loadData(){
+  try{
+    const resp=await fetch(PROXY);
+    if(!resp.ok)throw new Error('无法获取文件，状态码: '+resp.status);
+    const buf=await resp.arrayBuffer();
+    const wb=XLSX.read(buf,{type:'array'});
+
+    // summary
+    const sum=sheetToKV(wb.Sheets['summary']);
+    document.getElementById('s-followers').textContent=Number(sum['total_followers']||0).toLocaleString();
+    document.getElementById('s-likessaves').textContent=Number(sum['total_likes_saves']||0).toLocaleString();
+    document.getElementById('s-posts').textContent=Number(sum['total_posts']||0).toLocaleString();
+
+    // notes
+    const nws=wb.Sheets['笔记列表明细表'];
+    const nrows=XLSX.utils.sheet_to_json(nws,{header:1,defval:''});
+    const headers=nrows[1];
+    allNotes=nrows.slice(2).filter(r=>r[0]).map(r=>{
+      const o={};headers.forEach((h,i)=>{if(h)o[String(h).trim()]=r[i];});return o;
+    });
+
+    // pub date range
+    const pubSeries=sheetToDateSeries(wb.Sheets['总发布趋势']);
+    if(pubSeries.length){
+      const s=pubSeries[0].label,e=pubSeries[pubSeries.length-1].label;
+      document.getElementById('pub-period').textContent=s+'  →  '+e;
+      document.getElementById('update-date').innerHTML='数据截至<br>'+e;
+    }
+
+    // pub kpis
+    renderPubKPIs(sheetToKV(wb.Sheets['账号总体发布数据']));
+    renderEngageKPIs(sheetToKV(wb.Sheets['账号总体互动数据']));
+    renderFansKPIs(sheetToKV(wb.Sheets['账号总体涨粉数据']));
+
+    // charts
+    makeTrendChart('chartPublish',pubSeries,'每日发布','rgb(87,6,140)',false);
+    const expSeries=sheetToDateSeries(wb.Sheets['曝光趋势']);
+    const viewSeries=sheetToDateSeries(wb.Sheets['观看趋势']);
+    makeViewsChart(expSeries,viewSeries);
+    const likeSeries=sheetToDateSeries(wb.Sheets['点赞趋势']);
+    makeTrendChart('chartEngage',likeSeries,'每日点赞','rgb(87,6,140)',false);
+    const fanSeries=sheetToDateSeries(wb.Sheets['新增关注趋势']);
+    makeTrendChart('chartFans',fanSeries,'新增关注','rgb(87,6,140)',false);
+
+    renderTop10('all');
+
+    document.getElementById('loading-state').style.display='none';
+    document.getElementById('dashboard-content').style.display='block';
+  }catch(e){
+    document.getElementById('loading-state').style.display='none';
+    document.getElementById('error-state').style.display='block';
+    document.getElementById('error-state').textContent='数据加载失败：'+e.message+'。请确认 Google Drive 文件已设置为"Anyone with the link can view"。';
+  }
+}
+
+loadData();
+</script>
+</body>
+</html>
